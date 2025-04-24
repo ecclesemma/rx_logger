@@ -1,6 +1,6 @@
 # Medication Tracker
 
-A full-stack application for tracking medication intake with a Flask backend and React frontend.
+A full-stack application for tracking medication intake with a Flask backend and React/TypeScript frontend. Responsive UI built with Material UI components.
 
 ![Status](https://img.shields.io/badge/Status-In%20Development-yellow)
 ![License](https://img.shields.io/badge/License-MIT-blue)
@@ -9,8 +9,8 @@ A full-stack application for tracking medication intake with a Flask backend and
 
 - Log medication intake with timestamps
 - View medication history with user-friendly time formatting
+- NFC tag support for quick medication logging
 - Backend API for storing and retrieving medication data
-- Responsive UI built with Material UI components
 
 ## Project Structure
 
@@ -86,6 +86,54 @@ med_logs/
 4. Access the application:
    Open your browser and go to `http://localhost:3000`
 
+## Programming and Using NFC Tags
+
+You can use NFC tags to log medications with a single tap via iPhone Shortcuts.
+
+### You Will Need
+
+    - An iPhone
+    - Blank NFC Tags
+    - The Shortcuts app (pre-installed on iOS)
+    - NFC Tools app (optional but helpful)
+
+### Create a New Shortcut
+
+1. Tap + to create a new shortcut in the Shortcuts app
+2. Add the following actions:
+   - Get contents of URL
+     - `Method`: POST
+     - `URL`: `http://<your-ipv4-address>:5000/log
+     - `Headers`: { Content-Type: application/json}
+     - `Request Body`:
+       ```json
+       {
+         "medication": "Example Med Name",
+         "timestamp": "CURRENT_DATE",
+         "source": "nfc"
+       }
+       ```
+   - Replace "CURRENT_DATE" with the current date variable and Format date as ISO 8601
+3. (Optional) Add Notification
+   - `If` → [Get Contents of URL] `contains` "Medication logged successfully!"
+     - `Show Notification`: "Med Logged"
+   - `Otherwise`:
+     - `Show Notification`: "Logging Failed"
+4. Add Automation
+   - Go to Shortcuts > Automation
+   - Create Personal Automation
+   - Choose `NFC`
+   - Scan and name the tag you want to use
+   - Add `Run Shortcut` and select the shorcut you just made
+
+#### Now You Can:
+
+    - Tap your phone to the NFC tag
+    - Your shortcut runs and sends a POST request to your local server
+    - Your med log is instantly recorded in the database
+
+- **Note**: Be sure your iPhone and computer are on the same Wi-Fi network and your Flask server is running with `host='0.0.0.0'`
+
 ## API Endpoints
 
 | Endpoint       | Method | Description             | Request Body                             | Response                    |
@@ -96,12 +144,12 @@ med_logs/
 
 ## Future Improvements
 
-- User authentication system
 - Medication scheduling and reminders
 - Medication database integration
 - Data visualization for adherence tracking
-- Mobile app version with offline capabilities
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+Copyright © 2025 Apiary Logic
